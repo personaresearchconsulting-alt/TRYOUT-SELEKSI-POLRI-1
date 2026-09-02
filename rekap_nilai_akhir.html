@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rekap Nilai Akhir</title>
+    <title>Rekap Nilai</title>
     <style>
         * {
             box-sizing: border-box;
@@ -65,6 +65,7 @@
             justify-content: center;
             gap: 10px;
             margin-top: 15px;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -83,19 +84,27 @@
             background-color: #219150;
         }
 
-        .btn-next {
-            background-color: #2980b9;
+        .btn-reset {
+            background-color: #e67e22;
         }
 
-        .btn-next:hover {
-            background-color: #1f6391;
+        .btn-reset:hover {
+            background-color: #d35400;
+        }
+
+        .btn-restart {
+            background-color: #e74c3c;
+        }
+
+        .btn-restart:hover {
+            background-color: #c0392b;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>REKAPITULASI NILAI AKHIR</h2>
+    <h2>REKAPITULASI NILAI SELESAI</h2>
 
     <table class="table-rekap">
         <thead>
@@ -107,11 +116,11 @@
             </tr>
         </thead>
         <tbody id="rekap-body">
-            <!-- Data akan diisi via JavaScript -->
+            <!-- Data tes yang sudah dikerjakan akan masuk ke sini -->
         </tbody>
         <tfoot>
             <tr class="total-row">
-                <td colspan="2">NILAI AKHIR KUMULATIF</td>
+                <td colspan="2">RATA-RATA NILAI SAAT INI</td>
                 <td id="nilai-akhir">0</td>
                 <td id="status-akhir">-</td>
             </tr>
@@ -119,14 +128,14 @@
     </table>
 
     <div class="btn-container">
-        <button class="btn" onclick="window.print()">Cetak Rekap</button>
-        <button class="btn btn-next" onclick="lanjutTes()">Lanjut ke Tes Kecermatan</button>
+        <button class="btn" onclick="window.print()">Cetak Hasil</button>
+        <button class="btn btn-reset" onclick="resetData()">Reset Data</button>
+        <button class="btn btn-restart" onclick="ulangTes()">Ulangi Dari Tes 1</button>
     </div>
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Ambil data dari localStorage tanpa menyisipkan data dummy otomatis jika kosong
+    function muatDataRekap() {
         const rawData = localStorage.getItem("rekapNilai");
         const dataHasil = rawData ? JSON.parse(rawData) : [];
 
@@ -136,7 +145,7 @@
         tbody.innerHTML = "";
 
         if (dataHasil.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" style="color: red;">Belum ada data nilai tersimpan. Silakan selesaikan tes terlebih dahulu.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" style="color: #721c24; background-color: #f8d7da; padding: 15px;">Belum ada data nilai tersimpan. Silakan kerjakan tes terlebih dahulu.</td></tr>`;
             document.getElementById("nilai-akhir").innerText = "0";
             document.getElementById("status-akhir").innerText = "-";
             return;
@@ -149,22 +158,35 @@
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${index + 1}</td>
-                <td>${item.materi || '-'}</td>
+                <td>${item.materi || 'Tes ' + (index + 1)}</td>
                 <td>${nilaiNum}</td>
-                <td>${item.ket || '-'}</td>
+                <td>${item.ket || 'Selesai'}</td>
             `;
             tbody.appendChild(tr);
         });
 
-        // Hitung rata-rata nilai akhir
         const rataRata = (totalNilai / dataHasil.length).toFixed(2);
         document.getElementById("nilai-akhir").innerText = rataRata;
         document.getElementById("status-akhir").innerText = rataRata >= 60 ? "MEMENUHI SYARAT" : "TIDAK MEMENUHI SYARAT";
-    });
-
-    function lanjutTes() {
-        window.location.href = "kecermatan_1_to.html";
     }
+
+    // Fungsi Tombol Reset (Hanya mengosongkan tabel & storage tanpa pindah halaman)
+    function resetData() {
+        if (confirm("Apakah kamu yakin ingin mengosongkan seluruh data rekap nilai ini?")) {
+            localStorage.removeItem("rekapNilai");
+            muatDataRekap();
+        }
+    }
+
+    // Fungsi Ulangi Tes (Reset data + Pindah ke tes pertama)
+    function ulangTes() {
+        if (confirm("Yakin ingin menghapus rekap nilai dan mengulang dari tes pertama?")) {
+            localStorage.removeItem("rekapNilai");
+            window.location.href = "tes_1.html"; // Sesuaikan nama file tes pertamamu
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", muatDataRekap);
 </script>
 
 </body>
