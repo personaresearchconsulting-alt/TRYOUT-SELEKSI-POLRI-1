@@ -61,6 +61,10 @@
 
         .btn-container {
             text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
         }
 
         .btn {
@@ -77,6 +81,14 @@
 
         .btn:hover {
             background-color: #219150;
+        }
+
+        .btn-next {
+            background-color: #2980b9;
+        }
+
+        .btn-next:hover {
+            background-color: #1f6391;
         }
     </style>
 </head>
@@ -108,30 +120,38 @@
 
     <div class="btn-container">
         <button class="btn" onclick="window.print()">Cetak Rekap</button>
+        <button class="btn btn-next" onclick="lanjutTes()">Lanjut ke Tes Kecermatan</button>
     </div>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Ambil data hasil yang tersimpan di localStorage
-        const dataHasil = JSON.parse(localStorage.getItem("rekapNilai")) || [
-            { materi: "Subtes 1", nilai: 80, ket: "Memenuhi Syarat" },
-            { materi: "Subtes 2", nilai: 75, ket: "Memenuhi Syarat" },
-            { materi: "Subtes 3", nilai: 85, ket: "Memenuhi Syarat" }
-        ];
+        // Ambil data dari localStorage tanpa menyisipkan data dummy otomatis jika kosong
+        const rawData = localStorage.getItem("rekapNilai");
+        const dataHasil = rawData ? JSON.parse(rawData) : [];
 
         const tbody = document.getElementById("rekap-body");
         let totalNilai = 0;
 
         tbody.innerHTML = "";
+
+        if (dataHasil.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="color: red;">Belum ada data nilai tersimpan. Silakan selesaikan tes terlebih dahulu.</td></tr>`;
+            document.getElementById("nilai-akhir").innerText = "0";
+            document.getElementById("status-akhir").innerText = "-";
+            return;
+        }
+
         dataHasil.forEach((item, index) => {
-            totalNilai += item.nilai;
+            const nilaiNum = parseFloat(item.nilai) || 0;
+            totalNilai += nilaiNum;
+            
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${index + 1}</td>
-                <td>${item.materi}</td>
-                <td>${item.nilai}</td>
-                <td>${item.ket}</td>
+                <td>${item.materi || '-'}</td>
+                <td>${nilaiNum}</td>
+                <td>${item.ket || '-'}</td>
             `;
             tbody.appendChild(tr);
         });
@@ -141,6 +161,10 @@
         document.getElementById("nilai-akhir").innerText = rataRata;
         document.getElementById("status-akhir").innerText = rataRata >= 60 ? "MEMENUHI SYARAT" : "TIDAK MEMENUHI SYARAT";
     });
+
+    function lanjutTes() {
+        window.location.href = "kecermatan_1_to.html";
+    }
 </script>
 
 </body>
