@@ -84,6 +84,11 @@
 <script>
     const webAppUrl = "https://script.google.com/macros/s/AKfycbyqaDYQOig31sDQepprdzteruc_j-gY9ZakisHJXs3hLNJsDbc7bkBwdBVqhmud6bSjRg/exec";
     
+    let currentIdx = 0;
+    let answers = {};
+    let timerInterval = null;
+    let timeRemaining = 3600;
+
     const bank = [
         {
             q: "Saat Anda sedang melakukan patroli, seorang warga menghentikan kendaraan Anda dan memberikan informasi mengenai adanya transaksi narkoba di lingkungan perumahannya. Namun, saat itu Anda sedang terburu-buru menuju lokasi apel pagi. Sikap Anda...",
@@ -423,335 +428,140 @@
                 {t: "Meminta saran dan bimbingan dari instruktur upacara yang lebih berpengalaman agar penampilan Anda tetap maksimal.", s: 4},
                 {t: "Mencoba membayangkan kesuksesan upacara tersebut untuk membangun mental positif dalam diri Anda sebelum mulai bertugas.", s: 3},
                 {t: "Meminta bantuan rekan untuk berdiri di posisi yang mudah Anda lihat sebagai pemberi isyarat jika Anda melakukan kesalahan.", s: 2},
-                {t: "Mengajukan permohonan kepada pimpinan untuk diganti oleh personil lain yang menurut Anda jauh lebih berani tampil di depan umum.", s: 1}
-            ]
-        },
-        {
-            q: "Dalam operasional lapangan, Anda tidak sengaja merusak fasilitas umum milik warga saat mengejar pelaku kejahatan. Apa tindakan Anda setelah pelaku tertangkap?",
-            cat: "Tanggung Jawab & Integritas",
-            opts: [
-                {t: "Mencari pemilik fasilitas tersebut, meminta maaf, dan melaporkannya kepada pimpinan unit untuk proses ganti rugi dinas.", s: 5},
-                {t: "Mencoba memperbaiki sendiri fasilitas yang rusak tersebut agar warga merasa tidak dirugikan oleh tindakan kepolisian.", s: 4},
-                {t: "Memberitahu ketua RT setempat mengenai kejadian tersebut agar dapat dikomunikasikan dengan pemilik fasilitas yang bersangkutan.", s: 3},
-                {t: "Menganggap kerusakan tersebut adalah konsekuensi wajar dari sebuah operasi penegakan hukum demi kepentingan umum.", s: 2},
-                {t: "Segera meninggalkan lokasi setelah pelaku tertangkap agar tidak diminta pertanggungjawaban ganti rugi oleh pemiliknya.", s: 1}
-            ]
-        },
-        {
-            q: "Anda melihat adanya praktik kecurangan dalam pengadaan logistik kantor yang melibatkan beberapa pejabat menengah. Anda merasa terancam jika melapor. Apa sikap Anda?",
-            cat: "Integritas & Keberanian",
-            opts: [
-                {t: "Mengumpulkan bukti-bukti pendukung dan melaporkannya melalui aplikasi dumas presisi atau saluran pelaporan anonim milik Polri.", s: 5},
-                {t: "Membicarakan hal tersebut dengan rekan kerja yang Anda percayai integritasnya untuk mencari solusi pelaporan bersama.", s: 4},
-                {t: "Mencoba menjauhkan diri dari segala proses administrasi pengadaan tersebut agar tidak ikut terseret dalam masalah hukum.", s: 3},
-                {t: "Memilih untuk tetap diam demi menjaga keselamatan karier dan pribadi Anda di lingkungan unit kerja saat ini.", s: 2},
-                {t: "Ikut menikmati hasil kecurangan tersebut karena merasa itu adalah kesempatan untuk mendapatkan penghasilan tambahan.", s: 1}
-            ]
-        },
-        {
-            q: "Seorang warga asing yang tidak bisa berbahasa Indonesia meminta bantuan Anda untuk menemukan alamat hotelnya yang hilang. Anda sendiri kurang fasih berbahasa Inggris. Tindakan Anda...",
-            cat: "Prososial & Penyesuaian Diri",
-            opts: [
-                {t: "Menggunakan aplikasi penerjemah di ponsel, melihat peta digital bersama-sama, dan berusaha memberikan petunjuk sejelas mungkin.", s: 5},
-                {t: "Mencoba mencari rekan polisi lain atau warga sekitar yang memiliki kemampuan bahasa Inggris lebih baik untuk membantu.", s: 4},
-                {t: "Mengantarkan warga asing tersebut ke pusat informasi terdekat atau pos polisi agar bisa dibantu oleh petugas yang berkompeten.", s: 3},
-                {t: "Memberikan petunjuk jalan hanya dengan menggunakan bahasa isyarat seadanya tanpa berusaha mencari alat bantu lainnya.", s: 2},
-                {t: "Meminta maaf dan meninggalkannya karena Anda merasa keterbatasan bahasa akan membuat informasi yang Anda berikan keliru.", s: 1}
-            ]
-        },
-        {
-            q: "Pimpinan unit baru Anda memiliki gaya kepemimpinan yang sangat otoriter dan kaku, berbeda jauh dengan pimpinan sebelumnya. Bagaimana Anda beradaptasi?",
-            cat: "Penyesuaian Diri",
-            opts: [
-                {t: "Mempelajari ritme dan cara kerja pimpinan baru tersebut agar tugas-tugas yang diberikan dapat diselesaikan sesuai keinginannya.", s: 5},
-                {t: "Tetap bekerja profesional dan menjaga jarak komunikasi yang sewajarnya agar tidak terjadi gesekan secara personal.", s: 4},
-                {t: "Mengajak diskusi rekan-rekan kerja mengenai cara terbaik menghadapi karakter pimpinan baru demi kelancaran operasional.", s: 3},
-                {t: "Sering mengeluh dan membanding-bandingkan kebijakan pimpinan baru dengan pimpinan lama di hadapan rekan kerja lainnya.", s: 2},
-                {t: "Mencoba mencari celah untuk bisa pindah tugas (mutasi) ke unit lain karena merasa tidak cocok dengan gaya kepemimpinan tersebut.", s: 1}
-            ]
-        },
-        {
-            q: "Anda menemukan dompet milik rekan satu unit di kantin kantor. Di dalamnya terdapat uang yang cukup banyak. Saat itu Anda sedang memiliki kebutuhan mendesak untuk biaya sekolah adik. Sikap Anda...",
-            cat: "Integritas",
-            opts: [
-                {t: "Segera mencari rekan tersebut atau menitipkan dompet kepada petugas jaga/piket untuk dikembalikan dalam kondisi utuh.", s: 5},
-                {t: "Menyimpan dompet tersebut terlebih dahulu dan segera memberitahu pemiliknya melalui pesan singkat di grup WhatsApp kantor.", s: 4},
-                {t: "Membawa dompet tersebut ke ruangan rekan Anda dan meletakkannya di atas meja kerjanya tanpa menyentuh isinya sedikitpun.", s: 3},
-                {t: "Mengambil sedikit uang untuk kebutuhan adik Anda dan berniat mengembalikannya saat gajian bulan depan nanti.", s: 2},
-                {t: "Mengambil seluruh uangnya dan membuang dompetnya di tempat sampah agar tidak dicurigai sebagai pencuri oleh orang lain.", s: 1}
-            ]
-        },
-        {
-            q: "Saat bertugas di unit SIM, sistem online mengalami gangguan teknis yang menyebabkan penumpukan antrean pemohon selama berjam-jam. Bagaimana Anda mengelola situasi tersebut?",
-            cat: "Pengendalian Diri & Pelayanan",
-            opts: [
-                {t: "Memberikan penjelasan yang jujur mengenai gangguan sistem, memohon maaf, dan membagikan minuman ringan kepada pemohon yang menunggu.", s: 5},
-                {t: "Menginstruksikan petugas di loket untuk tetap melayani proses administrasi manual terlebih dahulu agar antrean tetap bergerak.", s: 4},
-                {t: "Menyediakan nomor urut prioritas bagi pemohon lansia dan ibu hamil agar mereka tidak terlalu lama menunggu di ruang antrean.", s: 3},
-                {t: "Hanya meminta pemohon untuk bersabar tanpa memberikan kepastian kapan sistem akan kembali normal untuk digunakan.", s: 2},
-                {t: "Menutup loket pelayanan secara total dan menyuruh semua pemohon pulang tanpa memberikan penjelasan yang memadai.", s: 1}
-            ]
-        },
-        {
-            q: "Seorang rekan kerja seringkali melimpahkan pekerjaan pribadinya kepada Anda dengan alasan ia sedang sibuk dengan urusan keluarga. Tindakan Anda adalah...",
-            cat: "Kepercayaan Diri & Komunikasi",
-            opts: [
-                {t: "Menegaskan dengan sopan bahwa Anda memiliki tugas pokok sendiri yang harus diselesaikan tepat waktu sesuai target pimpinan.", s: 5},
-                {t: "Membantunya sesekali saja jika pekerjaan Anda sudah benar-benar selesai dan hal tersebut tidak menjadi kebiasaan rutinnya.", s: 4},
-                {t: "Menyarankan rekan tersebut untuk meminta izin resmi kepada pimpinan jika memang urusan keluarganya sangat mendesak.", s: 3},
-                {t: "Mengerjakan tugasnya dengan perasaan dongkol karena Anda tidak enak hati untuk menolak permintaannya secara langsung.", s: 2},
-                {t: "Melaporkan perilaku rekan tersebut kepada atasan agar ia diberikan teguran karena sering melalaikan tanggung jawab kerjanya.", s: 1}
-            ]
-        },
-        {
-            q: "Anda ditugaskan melakukan pengamanan di lokasi bencana alam. Warga yang panik berebut bantuan logistik hingga terjadi kericuhan. Apa tindakan pertama Anda?",
-            cat: "Pengendalian Diri & Stabilitas",
-            opts: [
-                {t: "Menertibkan antrean dengan bantuan pengeras suara dan mengajak tokoh masyarakat setempat untuk membantu mengatur pembagian logistik.", s: 5},
-                {t: "Membentuk pagar betis bersama rekan Polri/TNI lainnya untuk melindungi stok logistik agar tidak dijarah oleh oknum massa.", s: 4},
-                {t: "Mendahulukan pembagian bantuan untuk kelompok rentan (anak-anak dan lansia) agar situasi kepanikan bisa sedikit mereda.", s: 3},
-                {t: "Mengancam akan menghentikan pembagian bantuan jika warga tidak mau mengantre dengan tertib sesuai instruksi petugas.", s: 2},
-                {t: "Membiarkan warga berebut karena Anda merasa jumlah personil pengamanan tidak sebanding dengan jumlah massa yang ada.", s: 1}
-            ]
-        },
-        {
-            q: "Anda menemukan adanya oknum pimpinan yang sering menerima setoran dari pengelola tempat hiburan malam di wilayah Anda. Apa yang Anda lakukan sebagai anggota reserse?",
-            cat: "Integritas & Keberanian",
-            opts: [
-                {t: "Melaporkan dugaan tindak pidana korupsi/gratifikasi tersebut kepada unit Paminal atau melalui sistem pengaduan internal Polri.", s: 5},
-                {t: "Berdiskusi dengan rekan kerja yang Anda percayai integritasnya mengenai langkah-langkah hukum yang bisa diambil tanpa membahayakan diri.", s: 4},
-                {t: "Mencatat setiap kejadian dan mengumpulkan bukti-bukti transaksi secara diam-diam sebagai bahan pelaporan di masa mendatang.", s: 3},
-                {t: "Memilih untuk tidak ikut campur dalam urusan pimpinan tersebut agar karier Anda di unit tersebut tetap aman dan lancar.", s: 2},
-                {t: "Meminta jatah bagian kepada pengelola hiburan malam tersebut dengan dalih sebagai uang koordinasi lapangan bagi anggota.", s: 1}
-            ]
-        },
-        {
-            q: "Seorang pengendara motor yang Anda tilang terus menerus memohon agar dilepaskan karena ia adalah seorang guru yang sedang terburu-buru menuju sekolah. Sikap Anda...",
-            cat: "Integritas & Etika",
-            opts: [
-                {t: "Tetap memproses tilang sesuai prosedur namun memberikan penjelasan dengan bahasa yang sangat menghargai profesinya sebagai guru.", s: 5},
-                {t: "Memberikan teguran tertulis saja sebagai bentuk apresiasi terhadap pengabdiannya namun tetap mencatat identitas pelanggarannya.", s: 4},
-                {t: "Menyarankan guru tersebut untuk segera mengurus denda tilangnya melalui e-Tilang agar tidak menghambat aktivitas mengajarnya.", s: 3},
-                {t: "Melepaskannya dengan syarat ia harus berjanji tidak akan mengulangi kesalahannya lagi di kemudian hari demi keselamatan di jalan.", s: 2},
-                {t: "Memarahinya karena sebagai guru seharusnya ia memberikan contoh yang baik dalam mematuhi aturan lalu lintas di jalan raya.", s: 1}
-            ]
-        },
-        {
-            q: "Unit Anda mendapatkan tugas untuk melakukan sosialisasi anti-narkoba di lingkungan lokalisasi. Banyak warga yang menatap sinis kedatangan petugas. Bagaimana Anda memulai tugas tersebut?",
-            cat: "Penyesuaian Diri & Komunikasi",
-            opts: [
-                {t: "Melakukan pendekatan humanis dengan menyapa warga secara ramah, mengajak berdialog santai, baru kemudian masuk ke materi sosialisasi.", s: 5},
-                {t: "Menggandeng tokoh agama atau tokoh masyarakat setempat untuk mendampingi petugas agar kehadiran Polri lebih mudah diterima warga.", s: 4},
-                {t: "Membagikan pamflet dan brosur terlebih dahulu agar warga memiliki gambaran mengenai tujuan kedatangan petugas di lingkungan mereka.", s: 3},
-                {t: "Langsung memulai penyuluhan dengan nada bicara yang tegas agar warga tahu bahwa Polri serius dalam memberantas narkoba.", s: 2},
-                {t: "Hanya melakukan patroli keliling saja tanpa melakukan dialog karena Anda merasa situasi kurang kondusif untuk sosialisasi.", s: 1}
-            ]
-        },
-        {
-            q: "Anda menemukan adanya kesalahan prosedur dalam penanganan Tempat Kejadian Perkara (TKP) yang dilakukan oleh rekan tim Anda. Apa tindakan Anda?",
-            cat: "Integritas & Tanggung Jawab",
-            opts: [
-                {t: "Segera menegur rekan tersebut secara langsung di lokasi dan membantu memperbaikinya agar barang bukti tidak rusak.", s: 5},
-                {t: "Mencatat kesalahan prosedur tersebut dalam laporan hasil olah TKP agar dapat dijadikan bahan evaluasi pimpinan di kantor.", s: 4},
-                {t: "Memberitahu ketua tim atau perwira pengawas mengenai kesalahan tersebut agar segera dilakukan langkah-langkah perbaikan.", s: 3},
-                {t: "Mendiamkan saja karena Anda merasa bukan wewenang Anda untuk mengoreksi cara kerja rekan kerja di lapangan.", s: 2},
-                {t: "Ikut melakukan kesalahan yang sama karena Anda tidak ingin dianggap sok tahu atau merusak kekompakan kerja tim lapangan.", s: 1}
-            ]
-        },
-        {
-            q: "Seorang warga melaporkan kehilangan kendaraan bermotor namun ia tidak memiliki dokumen kepemilikan yang lengkap karena masih dalam proses kredit. Tindakan Anda...",
-            cat: "Prososial & Prosedural",
-            opts: [
-                {t: "Menerima laporan tersebut sementara, meminta warga segera mengurus surat keterangan dari pihak leasing, dan melakukan pencarian awal.", s: 5},
-                {t: "Membantu warga tersebut menghubungi pihak leasing untuk mempercepat keluarnya surat keterangan kepemilikan kendaraan.", s: 4},
-                {t: "Menjelaskan dengan sabar persyaratan administrasi yang dibutuhkan agar laporan kehilangan dapat segera diproses secara hukum.", s: 3},
-                {t: "Menolak laporan tersebut dengan tegas hingga warga dapat menunjukkan bukti kepemilikan kendaraan yang sah menurut aturan.", s: 2},
-                {t: "Menyarankan warga untuk mencari sendiri kendaraannya terlebih dahulu sebelum membuat laporan resmi di kantor polisi.", s: 1}
-            ]
-        },
-        {
-            q: "Anda diperintahkan oleh pimpinan untuk melakukan mutasi terhadap anggota yang berprestasi hanya karena pimpinan tersebut memiliki dendam pribadi dengannya. Sikap Anda...",
-            cat: "Integritas & Keberanian",
-            opts: [
-                {t: "Menyampaikan pertimbangan objektif mengenai prestasi anggota tersebut dan meminta pimpinan meninjau kembali keputusan mutasi.", s: 5},
-                {t: "Menunda pelaksanaan perintah mutasi sambil mencari waktu yang tepat untuk mendiskusikan kembali masalah ini secara mendalam.", s: 4},
-                {t: "Berdiskusi dengan bagian SDM untuk mencari solusi agar anggota berprestasi tersebut tidak dirugikan oleh kebijakan pimpinan.", s: 3},
-                {t: "Tetap melaksanakan perintah mutasi tersebut karena sebagai staf Anda harus patuh pada setiap instruksi pimpinan tanpa syarat.", s: 2},
-                {t: "Menghasut anggota tersebut agar melaporkan pimpinan ke unit Provos atas dasar penyalahgunaan wewenang dalam mutasi jabatan.", s: 1}
-            ]
-        },
-        {
-            q: "Saat bertugas di unit Intelijen, Anda mendapatkan informasi mengenai rencana aksi terorisme namun informasi tersebut masih bersifat sumir dan belum terverifikasi. Apa tindakan Anda?",
-            cat: "Kepercayaan Diri & Strategis",
-            opts: [
-                {t: "Segera melaporkan informasi awal tersebut kepada pimpinan dan menyusun rencana verifikasi lapangan secara cepat dan rahasia.", s: 5},
-                {t: "Mencoba mencari informasi tambahan melalui jaringan informan lain untuk memperkuat data sebelum dilaporkan ke pimpinan.", s: 4},
-                {t: "Meningkatkan pemantauan terhadap objek-objek vital yang mungkin menjadi target aksi berdasarkan informasi sumir tersebut.", s: 3},
-                {t: "Menyimpan informasi tersebut sendiri hingga Anda mendapatkan bukti yang benar-benar akurat agar tidak dianggap menyebar kabar burung.", s: 2},
-                {t: "Mengabaikan informasi tersebut karena menganggap informasi yang sumir seringkali hanya merupakan isu sampah di lapangan.", s: 1}
-            ]
-        },
-        {
-            q: "Anda melihat adanya ketimpangan distribusi beban kerja di unit Anda, di mana beberapa anggota sangat sibuk sementara yang lain terlihat banyak santai. Sikap Anda sebagai anggota...",
-            cat: "Kepemimpinan & Kerja Tim",
-            opts: [
-                {t: "Mengusulkan dalam rapat unit agar dilakukan pembagian tugas kembali (re-job desk) yang lebih adil sesuai kompetensi masing-masing.", s: 5},
-                {t: "Membantu rekan yang sedang sangat sibuk secara sukarela meskipun tugas tersebut bukan merupakan bagian dari tanggung jawab Anda.", s: 4},
-                {t: "Menanyakan kepada pimpinan mengenai standar operasional prosedur dalam pembagian tugas harian di lingkungan unit kerja.", s: 3},
-                {t: "Memilih untuk tetap fokus pada tugas Anda sendiri dan tidak ingin ikut campur dalam masalah pembagian beban kerja rekan lain.", s: 2},
-                {t: "Ikut-ikutan bersantai jika melihat rekan lain santai agar Anda tidak merasa dimanfaatkan oleh sistem kerja yang tidak adil.", s: 1}
-            ]
-        },
-        {
-            q: "Anda sedang menangani kasus tawuran antar pelajar. Salah satu orang tua siswa mencoba menyuap Anda agar anaknya tidak ditahan dan diproses hukum. Respon Anda...",
-            cat: "Integritas & Kejujuran",
-            opts: [
-                {t: "Menolak uang tersebut dengan tegas, memberikan edukasi hukum kepada orang tua, dan tetap memproses siswa sesuai aturan.", s: 5},
-                {t: "Mengembalikan uang tersebut secara sopan dan menjelaskan bahwa setiap pelanggaran hukum memiliki konsekuensi yang harus dijalani.", s: 4},
-                {t: "Melaporkan upaya penyuapan tersebut kepada pimpinan agar dapat dijadikan catatan tambahan dalam proses penyidikan kasus.", s: 3},
-                {t: "Menerima uang tersebut namun tetap memproses hukum siswa dengan dalih uang tersebut akan disumbangkan ke panti asuhan.", s: 2},
-                {t: "Menerima uang suap dan membebaskan siswa tersebut karena Anda merasa masa depan siswa tersebut jauh lebih penting.", s: 1}
-            ]
-        },
-        {
-            q: "Dalam sebuah operasi penangkapan, Anda melihat tersangka mencoba melarikan diri ke arah kerumunan warga. Apa tindakan yang Anda ambil untuk mengamankannya?",
-            cat: "Pengendalian Diri & Keamanan",
-            opts: [
-                {t: "Melakukan pengejaran dengan tetap memperhatikan keselamatan warga di sekitar dan meminta bantuan warga untuk menutup jalan lari tersangka.", s: 5},
-                {t: "Memberikan tembakan peringatan ke udara agar tersangka berhenti berlari dan warga segera menjauh dari jalur pengejaran.", s: 4},
-                {t: "Berkoordinasi dengan rekan tim untuk melakukan pengepungan dari berbagai sudut agar tersangka tidak bisa masuk lebih jauh ke massa.", s: 3},
-                {t: "Langsung menabrakkan kendaraan dinas ke arah tersangka meskipun berisiko melukai warga yang berada di dekat lokasi kejadian.", s: 2},
-                {t: "Menghentikan pengejaran karena Anda khawatir jika dilanjutkan akan membahayakan keselamatan warga sipil yang tidak bersalah.", s: 1}
-            ]
-        },
-        {
-            q: "Anda ditugaskan di unit Humas dan diminta membuat konten media sosial mengenai keberhasilan Polri. Anda melihat banyak komentar negatif yang menghujat institusi. Bagaimana Anda mengelolanya?",
-            cat: "Pengendalian Diri & Stabilitas",
-            opts: [
-                {t: "Tetap konsisten mengunggah konten positif, memberikan klarifikasi yang berbasis data secara santun, dan melaporkan komentar yang bersifat provokatif.", s: 5},
-                {t: "Membalas komentar negatif tersebut dengan penjelasan yang logis dan tidak emosional agar citra Polri tetap terlihat profesional.", s: 4},
-                {t: "Mematikan kolom komentar pada unggahan yang sensitif untuk menghindari perdebatan kusir yang tidak produktif di media sosial.", s: 3},
-                {t: "Menghapus semua komentar negatif dan hanya menyisakan komentar positif agar citra institusi terlihat baik di mata publik.", s: 2},
-                {t: "Membiarkan saja komentar-komentar negatif tersebut karena Anda merasa setiap orang bebas berpendapat di media sosial.", s: 1}
+                {t: "Mengajukan permohonan penggantian komandan upacara kepada pimpinan karena merasa mental Anda belum siap.", s: 1}
             ]
         }
     ];
-let db = [], ans = {}, cur = 0, time = 60 * 60;
 
     function startTest() {
         const n = document.getElementById('inName').value.trim();
-        if(n.length < 3) return alert("Harap masukkan nama lengkap!");
-        // Acak soal agar tidak bosan
-        db = [...bank].sort(() => Math.random() - 0.5);
+        if(!n) return alert("Silakan isi nama terlebih dahulu!");
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('test-screen').style.display = 'block';
-        initNav(); show(); startTimer();
+        updateQuestion();
+        renderNav();
+        startTimer();
+    }
+
+    function updateQuestion() {
+        const q = bank[currentIdx];
+        document.getElementById('q-meta').innerText = `Soal ${currentIdx+1} dari ${bank.length} | Kategori: ${q.cat}`;
+        document.getElementById('q-text').innerText = q.q;
+        
+        let html = '';
+        q.opts.forEach((o, i) => {
+            const isSel = answers[currentIdx] === i ? 'selected' : '';
+            html += `<div class="opt ${isSel}" onclick="selectOpt(${i})">${String.fromCharCode(65+i)}. ${o.t}</div>`;
+        });
+        document.getElementById('options').innerHTML = html;
+        document.getElementById('btn-next').innerText = currentIdx === bank.length - 1 ? 'Selesai & Kirim' : 'Selanjutnya';
+        renderNav();
+    }
+
+    function selectOpt(i) {
+        answers[currentIdx] = i;
+        updateQuestion();
+        setTimeout(() => {
+            if (currentIdx < bank.length - 1) {
+                currentIdx++;
+                updateQuestion();
+            }
+        }, 200);
+    }
+
+    function nav(dir) {
+        if(dir === 1 && currentIdx === bank.length - 1) {
+            if(confirm("Apakah Anda yakin ingin menyelesaikan ujian ini?")) finishTest();
+            return;
+        }
+        currentIdx += dir;
+        if(currentIdx < 0) currentIdx = 0;
+        if(currentIdx >= bank.length) currentIdx = bank.length - 1;
+        updateQuestion();
+    }
+
+    function renderNav() {
+        let html = '';
+        bank.forEach((_, i) => {
+            let cls = 'nav-item';
+            if(answers[i] !== undefined) cls += ' filled';
+            if(i === currentIdx) cls += ' active';
+            html += `<div class="${cls}" onclick="currentIdx=${i};updateQuestion();">${i+1}</div>`;
+        });
+        document.getElementById('nav-grid').innerHTML = html;
     }
 
     function startTimer() {
-        const intv = setInterval(() => {
-            if(time <= 0) { clearInterval(intv); finish(); }
-            time--;
-            let m = Math.floor(time/60), s = time%60;
-            document.getElementById('timer').innerText = `${m}:${s<10?'0'+s:s}`;
+        timerInterval = setInterval(() => {
+            timeRemaining--;
+            let m = Math.floor(timeRemaining / 60);
+            let s = timeRemaining % 60;
+            document.getElementById('timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+            if(timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                finishTest();
+            }
         }, 1000);
     }
 
-    function initNav() {
-        const g = document.getElementById('nav-grid');
-        db.forEach((_,i) => {
-            const d = document.createElement('div');
-            d.className = 'nav-item'; d.id = `nav-${i}`; d.innerText = i+1;
-            d.onclick = () => { cur = i; show(); };
-            g.appendChild(d);
-        });
-    }
-
-    function show() {
-        const s = db[cur];
-        document.getElementById('q-meta').innerText = `SOAL ${cur+1} | KATEGORI: ${s.cat.toUpperCase()}`;
-        document.getElementById('q-text').innerText = s.q;
-        
-        let h = "";
-        const lbl = ['A', 'B', 'C', 'D', 'E'];
-        s.opts.forEach((o, idx) => {
-            const isSel = ans[cur]?.text === o.t ? 'selected' : '';
-            h += `<div class="opt ${isSel}" onclick="hit('${o.t}', ${o.s})"><b>${lbl[idx]}.</b> &nbsp; ${o.t}</div>`;
-        });
-        document.getElementById('options').innerHTML = h;
-
-        const bN = document.getElementById('btn-next');
-        if(cur === db.length - 1) {
-            bN.innerText = "SELESAI"; bN.style.background = "#22c55e";
-            bN.onclick = finish;
-        } else {
-            bN.innerText = "Selanjutnya"; bN.style.background = "var(--prc)";
-            bN.onclick = () => nav(1);
-        }
-
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-        document.getElementById(`nav-${cur}`).classList.add('active');
-    }
-
-    // FUNGSI HIT DENGAN AUTO-NEXT
-    function hit(t, s) {
-        ans[cur] = {text: t, score: s};
-        document.getElementById(`nav-${cur}`).classList.add('filled');
-        show(); // Update tampilan pilihan terpilih
-
-        // Jika bukan soal terakhir, pindah otomatis setelah 300ms
-        if(cur < db.length - 1) {
-            setTimeout(() => {
-                nav(1);
-            }, 300); 
-        }
-    }
-
-    function nav(d) {
-        let t = cur + d;
-        if(t >= 0 && t < db.length) { cur = t; show(); }
-    }
-
-    function finish() {
-        if(!confirm("Kirim jawaban sekarang?")) return;
-        let total = 0, rows = "";
-        db.forEach((s, i) => {
-            const a = ans[i] || {text: "-", score: 0};
-            total += a.score;
-            rows += `<tr><td>${i+1}</td><td>${s.q.substring(0, 70)}...</td><td>${a.score}</td></tr>`;
-        });
-
-        const nilaiKepribadian = Math.round((total / (db.length * 5)) * 100);
-        document.getElementById('score-val').innerText = nilaiKepribadian;
-        document.getElementById('name-label').innerText = document.getElementById('inName').value;
-        document.getElementById('table-body').innerHTML = rows;
-        
-        const st = document.getElementById('final-status');
-        st.innerText = nilaiKepribadian >= 72 ? "CUKUP MEMAHAMI MATERI" : "KURANG MEMAHAMI MATERI";
-        st.style.color = nilaiKepribadian >= 72 ? "green" : "red";
-
-        const namaPeserta = document.getElementById('inName').value.trim();
-        localStorage.setItem('prc_nama_peserta', namaPeserta);
-        localStorage.setItem('prc_nilai_kepribadian', nilaiKepribadian);
-        localStorage.setItem('prc_tes_kepribadian_selesai', 'true');
-
-        // Kirim data ke Google Sheets
-        const fd = new FormData();
-        fd.append("nama", document.getElementById('inName').value);
-        fd.append("skorMurni", total);
-        fetch(webAppUrl, { method: "POST", mode: "no-cors", body: fd });
-
+    function finishTest() {
+        clearInterval(timerInterval);
         document.getElementById('test-screen').style.display = 'none';
         document.getElementById('result-screen').style.display = 'block';
+        
+        let totalScore = 0;
+        let maxPossible = bank.length * 5;
+        let tbody = '';
+        
+        bank.forEach((q, i) => {
+            let score = 0;
+            if(answers[i] !== undefined) {
+                score = q.opts[answers[i]].s;
+            }
+            totalScore += score;
+            tbody += `<tr>
+                <td align="center">${i+1}</td>
+                <td>${q.q.substring(0, 60)}...</td>
+                <td align="center">${score}</td>
+            </tr>`;
+        });
+
+        const nama = document.getElementById('inName').value.trim();
+        const nilaiPersen = Math.round((totalScore / maxPossible) * 100);
+
+        document.getElementById('name-label').innerText = nama;
+        document.getElementById('score-val').innerText = `${totalScore} / ${maxPossible} (${nilaiPersen})`;
+        document.getElementById('table-body').innerHTML = tbody;
+        
+        if(nilaiPersen >= 70) {
+            document.getElementById('final-status').innerText = "STATUS: MEMENUHI SYARAT (MS)";
+            document.getElementById('final-status').style.color = "green";
+        } else {
+            document.getElementById('final-status').innerText = "STATUS: TIDAK MEMENUHI SYARAT (TMS)";
+            document.getElementById('final-status').style.color = "red";
+        }
+
+        localStorage.setItem('prc_nama_peserta', nama);
+        localStorage.setItem('prc_nilai_kepribadian', nilaiPersen);
+        localStorage.setItem('prc_tes_kepribadian_selesai', 'true');
+
+        window.scrollTo(0, 0);
     }
 
     function lanjutKeKecermatan() {
-        window.location.href = 'kepribadian_1_to.html';
+        window.location.href = './kecermatan_1_to.html';
     }
 
     function downloadPDF() {
         const element = document.getElementById('pdf-content');
-        html2pdf().from(element).save(`Hasil_TKP_50_${document.getElementById('inName').value}.pdf`);
+        const opt = {
+            margin: 10,
+            filename: `Hasil_TKP_${document.getElementById('inName').value}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
     }
 </script>
 </body>
