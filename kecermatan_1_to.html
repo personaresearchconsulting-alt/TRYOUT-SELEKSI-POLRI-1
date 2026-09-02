@@ -369,12 +369,16 @@
             <canvas id="chartPauli"></canvas>
         </div>
         
-        <button id="btnRekapAkhir" style="background:#0b2340; color:#fff; border:none; padding:14px; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:10px; width:100%; font-size:14px; display:none;" onclick="window.location.href='REKAP_NILAI_AKHIR.html'">📊 LIHAT REKAP NILAI AKHIR</button>
+        <button id="btnRekapAkhir" style="background:#0b2340; color:#fff; border:none; padding:14px; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:10px; width:100%; font-size:14px; display:none;" onclick="lihatRekap()">📊 LIHAT REKAP NILAI AKHIR</button>
         <button id="btnDownload" style="background:#27ae60; color:#fff; border:none; padding:14px; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; width:100%; font-size:14px;" onclick="downloadFullPDF()">📥 DOWNLOAD HASIL (PDF)</button>
     </div>
 </div>
 
 <script>
+    function lihatRekap() {
+        window.location.href = './rekap_nilai_akhir.html';
+    }
+
     // SIMBOL MATEMATIKA & LOGIKA KHUSUS (Kompatibel 100% di semua HP & OS tanpa gambar external)
     const MASTER_BANK = [
         ['§', '¶', '©', '®', 'µ'], // Kolom 1
