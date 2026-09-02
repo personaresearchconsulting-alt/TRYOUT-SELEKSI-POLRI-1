@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>TES KECERMATAN SIMBOL KHUSUS</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --navy: #0b2340;
+            --gold: #d4a017;
+            --gray: #f1f5f9;
+            --danger: #c0392b;
+            --btn-shadow: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            -webkit-user-select: none;
+            user-select: none;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            color: #071130;
+        }
+
+        .wrap {
+            width: 100%;
+            max-width: 900px;
+            background: #fff;
+            border-top: 6px solid var(--navy);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin: 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 90vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 18px;
+            color: var(--navy);
+            margin: 0;
+            font-weight: 800;
+        }
+
+        .sub-header {
+            font-size: 11px;
+            color: #64748b;
+            margin: 3px 0 0 0;
+        }
+
+        #loginBox {
+            text-align: center;
+            padding: 40px 15px;
+            margin: auto 0;
+        }
+
+        input {
+            padding: 14px;
+            width: 100%;
+            max-width: 300px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+            outline: none;
+            display: block;
+            margin: 0 auto 15px auto;
+        }
+
+        .btn-start {
+            background: var(--navy);
+            color: #fff;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 700;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        #prepOverlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255,255,255,0.98);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            flex-direction: column;
+        }
+
+        #countdownText {
+            font-size: 100px;
+            font-weight: 900;
+            color: var(--navy);
+        }
+
+        .top-row {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--gray);
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        #timer {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--danger);
+            font-family: monospace;
+        }
+
+        #testArea {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        .acuan-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .acuan-table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 450px;
+            table-layout: fixed;
+        }
+
+        .acuan-table td {
+            border: 2px solid var(--navy);
+            height: 60px;
+            text-align: center;
+            background: #fff;
+            vertical-align: middle;
+            font-size: 26px;
+            font-weight: 900;
+            font-family: "Courier New", Courier, monospace, sans-serif;
+        }
+
+        .acuan-table td.label {
+            background: var(--navy);
+            color: #fff;
+            font-size: 18px;
+            height: 35px;
+            font-weight: bold;
+            font-family: sans-serif;
+        }
+
+        .soal-box {
+            padding: 15px;
+            background: var(--gray);
+            border-radius: 12px;
+            min-height: 75px;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            font-family: "Courier New", Courier, monospace, sans-serif;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .pilihan-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            width: 100%;
+            max-width: 450px;
+            margin-bottom: 15px;
+        }
+
+        .pilihan-btn {
+            background: #fff;
+            border: 2px solid var(--navy);
+            padding: 15px 0;
+            font-size: 20px;
+            font-weight: 800;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 var(--btn-shadow);
+            text-align: center;
+        }
+
+        .pilihan-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        #resultArea {
+            display: none;
+            width: 100%;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .card-skor {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-skor b {
+            display: block;
+            font-size: 10px;
+            color: #64748b;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .val-skor {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--navy);
+            line-height: 1.1;
+        }
+
+        .card-akhir {
+            grid-column: span 2;
+            background: var(--navy) !important;
+            color: #fff !important;
+        }
+
+        .card-akhir .val-skor {
+            color: var(--gold);
+            font-size: 36px;
+        }
+
+        .table-res {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-top: 15px;
+        }
+
+        .table-res th, .table-res td {
+            border: 1px solid #cbd5e1;
+            padding: 6px;
+            text-align: center;
+        }
+
+        .table-res th {
+            background: var(--navy);
+            color: #fff;
+        }
+
+        .kat-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 9px;
+            font-weight: bold;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        .bg-sukses { background: #dcfce7; color: #166534; }
+        .bg-bahaya { background: #fee2e2; color: #991b1b; }
+
+        @media (max-width: 480px) {
+            .wrap { padding: 12px; margin: 0; border-radius: 0; min-height: 100vh; }
+            .acuan-table td { height: 50px; font-size: 20px; }
+            .soal-box { font-size: 26px; min-height: 65px; }
+            .pilihan-btn { padding: 12px 0; font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrap" id="captureArea">
+    <header>
+        <h1>TES KECERMATAN SIMBOL KHUSUS</h1>
+        <p class="sub-header">Persona Research & Consulting</p>
+    </header>
+
+    <div id="loginBox">
+        <input type="text" id="username" placeholder="Nama Lengkap Siswa..." autocomplete="off">
+        <button class="btn-start" onclick="startLogin()">MULAI SIMULASI</button>
+    </div>
+
+    <div id="prepOverlay">
+        <div style="font-size:16px; margin-bottom:10px; color: #64748b; font-weight: bold;">FOKUS SIMBOL...</div>
+        <div id="countdownText">3</div>
+    </div>
+
+    <div class="top-row" id="topRow">
+        <div id="kolomInfo" style="font-weight: bold; font-size: 14px;">KOLOM: 1 / 10</div>
+        <div id="timer">01:00</div>
+    </div>
+
+    <div id="testArea">
+        <div class="acuan-wrapper">
+            <table class="acuan-table">
+                <tr id="rowSimbol"></tr>
+                <tr id="rowLabel"></tr>
+            </table>
+        </div>
+        <div class="soal-box" id="soalCont"></div>
+        <div id="pilihan" class="pilihan-grid"></div>
+    </div>
+
+    <div id="resultArea">
+        <h2 style="text-align: center; font-size: 16px; margin-bottom: 5px;">LAPORAN HASIL AKHIR</h2>
+        <p id="resName" style="text-align:center; font-weight:900; font-size:18px; color:var(--navy); margin:0 0 10px 0; border-bottom: 2px solid var(--navy); padding-bottom:8px; text-transform: uppercase;"></p>
+        
+        <div id="summaryBox" class="summary-cards"></div>
+
+        <div style="background:#f1f5f9; padding:12px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:12px;">
+            <b style="color:var(--navy); font-size:12px;">ANALISA HUKUM & PSIKOLOGIS POLRI:</b>
+            <div id="kesimpulanNarasi" style="margin-top:6px; line-height:1.4; font-size:11px; color:#334155;"></div>
+        </div>
+
+        <table class="table-res">
+            <thead>
+                <tr>
+                    <th>Kolom</th>
+                    <th>Terjawab</th>
+                    <th>Benar</th>
+                    <th>Salah</th>
+                    <th>+/-</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyHasil"></tbody>
+        </table>
+        
+        <div style="margin-top:15px; height: 180px; border:1px solid #e2e8f0; padding:8px; border-radius:8px;">
+            <canvas id="chartPauli"></canvas>
+        </div>
+        
+        <button id="btnRekapAkhir" style="background:#0b2340; color:#fff; border:none; padding:14px; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:10px; width:100%; font-size:14px; display:none;" onclick="window.location.href='REKAP_NILAI_AKHIR.html'">📊 LIHAT REKAP NILAI AKHIR</button>
+        <button id="btnDownload" style="background:#27ae60; color:#fff; border:none; padding:14px; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:15px; width:100%; font-size:14px;" onclick="downloadFullPDF()">📥 DOWNLOAD HASIL (PDF)</button>
+    </div>
+</div>
+
+<script>
+    // SIMBOL MATEMATIKA & LOGIKA KHUSUS (Kompatibel 100% di semua HP & OS tanpa gambar external)
+    const MASTER_BANK = [
+        ['§', '¶', '©', '®', 'µ'], // Kolom 1
+        ['Δ', 'Ω', '∞', 'Σ', 'π'], // Kolom 2
+        ['Ψ', 'λ', 'θ', 'Φ', 'β'], // Kolom 3
+        ['¢', '£', '¥', '€', '§'], // Kolom 4
+        ['♠', '♣', '♥', '♦', '¶'], // Kolom 5
+        ['★', '▲', '●', '■', '◆'], // Kolom 6
+        ['α', 'β', 'γ', 'δ', 'Ω'], // Kolom 7
+        ['∷', '≠', '≤', '≥', '∞'], // Kolom 8
+        ['©', '®', '¥', '€', '★'], // Kolom 9
+        ['Δ', 'Ψ', '♠', '♣', '♦']  // Kolom 10
+    ];
+
+    let currentIdx = 0, timerLeft = 60, interval = null, results = [], pName = "", activeChars = [];
+
+    function startLogin() {
+        const u = document.getElementById('username').value.trim();
+        if(!u) return alert('Nama wajib diisi!');
+        pName = u;
+        document.getElementById('loginBox').style.display = 'none';
+        triggerCountdown();
+    }
+
+    function triggerCountdown() {
+        document.getElementById('testArea').style.display = 'none';
+        const overlay = document.getElementById('prepOverlay');
+        const countText = document.getElementById('countdownText');
+        overlay.style.display = 'flex';
+        let count = 3; countText.textContent = count;
+        let t = setInterval(() => {
+            count--; 
+            if(count > 0) countText.textContent = count;
+            else { clearInterval(t); overlay.style.display = 'none'; startCol(); }
+        }, 1000);
+    }
+
+    function startCol() {
+        activeChars = [...MASTER_BANK[currentIdx]].sort(() => Math.random() - 0.5);
+        timerLeft = 60;
+        if(!results[currentIdx]) results.push({t:0, b:0, s:0});
+        document.getElementById('topRow').style.display = 'flex';
+        document.getElementById('testArea').style.display = 'flex';
+        document.getElementById('kolomInfo').textContent = `KOLOM: ${currentIdx + 1} / 10`;
+        
+        let hSimbol = ''; let hLabel = '';
+        activeChars.forEach((c, i) => {
+            hSimbol += `<td>${c}</td>`;
+            hLabel += `<td class="label">${String.fromCharCode(65+i)}</td>`;
+        });
+        document.getElementById('rowSimbol').innerHTML = hSimbol;
+        document.getElementById('rowLabel').innerHTML = hLabel;
+
+        nextSoal();
+        if(interval) clearInterval(interval);
+        interval = setInterval(() => {
+            timerLeft--;
+            document.getElementById('timer').textContent = `00:${String(timerLeft).padStart(2,'0')}`;
+            if(timerLeft <= 0) {
+                clearInterval(interval);
+                currentIdx++;
+                if(currentIdx < 10) triggerCountdown(); else showFinal();
+            }
+        }, 1000);
+    }
+
+    function nextSoal() {
+        const missingIdx = Math.floor(Math.random() * 5);
+        const correctLabel = String.fromCharCode(65 + missingIdx);
+        const display = activeChars.filter((_, i) => i !== missingIdx).sort(() => Math.random() - 0.5);
+        const soalCont = document.getElementById('soalCont');
+        soalCont.textContent = display.join(' ');
+        
+        const cont = document.getElementById('pilihan');
+        cont.innerHTML = '';
+        ['A','B','C','D','E'].forEach(l => {
+            const btn = document.createElement('button');
+            btn.className = 'pilihan-btn'; btn.textContent = l;
+            btn.onclick = () => { 
+                results[currentIdx].t++; 
+                if(l === correctLabel) results[currentIdx].b++; else results[currentIdx].s++; 
+                nextSoal(); 
+            };
+            cont.appendChild(btn);
+        });
+    }
+
+    function showFinal() {
+        document.getElementById('testArea').style.display = 'none';
+        document.getElementById('topRow').style.display = 'none';
+        document.getElementById('resultArea').style.display = 'block';
+        document.getElementById('resName').textContent = pName;
+        
+        const terjawab = results.map(r => r.t);
+        const totalB = results.reduce((a, b) => a + b.b, 0);
+        const totalS = results.reduce((a, b) => a + b.s, 0);
+        
+        const minK = Math.min(...terjawab);
+        const maxK = Math.max(...terjawab);
+        const range = maxK - minK;
+        const avgK = terjawab.reduce((a, b) => a + b, 0) / 10;
+
+        // --- NORMA PENGUKURAN PRESISI POLRI (MAX SCORE = 40.00) ---
+        
+        // 1. KECEPATAN (MAX 13.33)
+        let skorKecepatan = 0;
+        let katKecepatan = '';
+        if (avgK >= 50) {
+            skorKecepatan = 13.33;
+            katKecepatan = 'SANGAT BAIK';
+        } else if (avgK >= 30) {
+            skorKecepatan = 10.00 + ((avgK - 30) / 20) * 2.99;
+            katKecepatan = 'BAIK';
+        } else if (avgK >= 25) {
+            skorKecepatan = 7.00 + ((avgK - 25) / 5) * 2.99;
+            katKecepatan = 'CUKUP';
+        } else {
+            skorKecepatan = Math.max(0, (avgK / 25) * 6.99);
+            katKecepatan = 'KURANG';
+        }
+
+        // 2. KETELITIAN (MAX 13.33)
+        let skorKetelitian = 0;
+        let katKetelitian = '';
+        if (totalS === 0) {
+            skorKetelitian = 13.33;
+            katKetelitian = 'SANGAT BAIK';
+        } else if (totalS <= 2) {
+            skorKetelitian = 13.33 - (totalS * 1.5);
+            katKetelitian = 'BAIK';
+        } else if (totalS <= 4) {
+            skorKetelitian = 10.00 - ((totalS - 2) * 1.5);
+            katKetelitian = 'CUKUP';
+        } else {
+            skorKetelitian = Math.max(0, 7.00 - ((totalS - 4) * 1.0));
+            katKetelitian = 'KURANG';
+        }
+
+        // 3. KESTABILAN (MAX 13.34)
+        let skorKestabilan = 0;
+        let katKestabilan = '';
+        if (range === 0) {
+            skorKestabilan = 13.34;
+            katKestabilan = 'SANGAT BAIK';
+        } else if (range <= 2) {
+            skorKestabilan = 13.34 - (range * 1.5);
+            katKestabilan = 'BAIK';
+        } else if (range <= 4) {
+            skorKestabilan = 10.00 - ((range - 2) * 1.5);
+            katKestabilan = 'CUKUP';
+        } else {
+            skorKestabilan = Math.max(0, 7.00 - ((range - 4) * 1.0));
+            katKestabilan = 'KURANG';
+        }
+
+        // TOTAL AKUMULASI NILAI AKHIR POLRI
+        const nilaiAkhir = (skorKecepatan + skorKetelitian + skorKestabilan).toFixed(2);
+
+        // INTEGRASI SISTEM TRYOUT PERSONA RESEARCH & CONSULTING
+        // Nilai asli tes kecermatan maksimal 40, kemudian dinormalisasi ke skala 0-100
+        const nilaiKecermatan100 = Math.max(0, Math.min(100, (parseFloat(nilaiAkhir) / 40) * 100));
+        localStorage.setItem('prc_nilai_kecermatan', nilaiKecermatan100.toFixed(2));
+        localStorage.setItem('prc_nama_peserta', pName);
+        localStorage.setItem('prc_status_kecermatan', 'selesai');
+        localStorage.setItem('prc_detail_kecermatan', JSON.stringify({
+            nama: pName,
+            nilaiAsli: parseFloat(nilaiAkhir),
+            nilaiSkala100: nilaiKecermatan100,
+            totalBenar: totalB,
+            totalSalah: totalS,
+            rataRataKecepatan: avgK,
+            rangeKestabilan: range,
+            selesaiPada: new Date().toISOString()
+        }));
+        const btnRekap = document.getElementById('btnRekapAkhir');
+        if (btnRekap) btnRekap.style.display = 'block';
+
+        // DASHBOARD SUMMARY
+        document.getElementById('summaryBox').innerHTML = `
+            <div class="card-skor">
+                <b>KECEPATAN (RATA-RATA)</b>
+                <div class="val-skor">${avgK.toFixed(1)}</div>
+                <span class="kat-badge ${katKecepatan==='SANGAT BAIK'||katKecepatan==='BAIK'?'bg-sukses':'bg-bahaya'}">${katKecepatan}</span>
+            </div>
+            <div class="card-skor">
+                <b>KETELITIAN (TOTAL SALAH)</b>
+                <div class="val-skor">${totalS}</div>
+                <span class="kat-badge ${katKetelitian==='SANGAT BAIK'||katKetelitian==='BAIK'?'bg-sukses':'bg-bahaya'}">${katKetelitian}</span>
+            </div>
+            <div class="card-skor">
+                <b>KESTABILAN (RANGE)</b>
+                <div class="val-skor">${range}</div>
+                <span class="kat-badge ${katKestabilan==='SANGAT BAIK'||katKestabilan==='BAIK'?'bg-sukses':'bg-bahaya'}">${katKestabilan}</span>
+            </div>
+            <div class="card-skor">
+                <b>TOTAL BENAR</b>
+                <div class="val-skor">${totalB}</div>
+            </div>
+            <div class="card-akhir card-skor">
+                <b>NILAI AKHIR (MAX 40)</b>
+                <div class="val-skor">${nilaiAkhir}</div>
+            </div>
+        `;
+
+        let narasi = `Hasil pemeriksaan psikologis tes kecermatan menunjukkan Saudara ${pName} memiliki rata-rata kecepatan pengerjaan ${avgK.toFixed(1)} soal/menit (${katKecepatan}). `;
+        narasi += `Ketelitian berada pada kategori ${katKetelitian} dengan total kesalahan ${totalS}. `;
+        narasi += `Tingkat kestabilan kerja tergolong ${katKestabilan} dengan selisih rentang (max-min) sebesar ${range}.`;
+        document.getElementById('kesimpulanNarasi').textContent = narasi;
+
+        let h = '';
+        results.forEach((r, i) => { 
+            let fluk = i === 0 ? 0 : r.t - results[i-1].t;
+            h += `<tr><td>${i+1}</td><td>${r.t}</td><td>${r.b}</td><td>${r.s}</td><td>${fluk > 0 ? '+'+fluk : fluk}</td></tr>`; 
+        });
+        document.getElementById('tbodyHasil').innerHTML = h;
+
+        new Chart(document.getElementById('chartPauli'), {
+            type: 'line',
+            data: {
+                labels: [1,2,3,4,5,6,7,8,9,10],
+                datasets: [{ 
+                    label: 'Kecepatan per Kolom', 
+                    data: terjawab, 
+                    borderColor: '#0b2340', 
+                    tension: 0.2, 
+                    fill: true, 
+                    backgroundColor: 'rgba(11,35,64,0.1)' 
+                }]
+            },
+            options: { 
+                maintainAspectRatio: false, 
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: false } }
+            }
+        });
+    }
+
+    async function downloadFullPDF() {
+        const btn = document.getElementById('btnDownload');
+        btn.style.display = 'none';
+        const element = document.getElementById('captureArea');
+        const canvas = await html2canvas(element, { scale: 2 });
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const w = pdf.internal.pageSize.getWidth();
+        const h = (canvas.height * w) / canvas.width;
+        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, w, h);
+        pdf.save(`Hasil_Kecermatan_POLRI_${pName}.pdf`);
+        btn.style.display = 'block';
+    }
+</script>
+</body>
+</html>

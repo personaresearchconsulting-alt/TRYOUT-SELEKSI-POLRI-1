@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRYOUT ONLINE | Persona Research & Consulting</title>
+<style>
+:root{--navy:#071a33;--navy2:#102d52;--blue:#1a4a7a;--gold:#d4af37;--bg:#f3f6fa;--text:#172033;--muted:#667085}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.hero{min-height:360px;background:radial-gradient(circle at top right,#285789 0,transparent 35%),linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:28px 7% 70px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:380px;height:380px;border:1px solid rgba(255,255,255,.1);border-radius:50%;right:-100px;bottom:-180px}
+.brand{display:flex;align-items:center;gap:14px;position:relative;z-index:1}.logo{width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,var(--gold),#f0d879);color:var(--navy);display:grid;place-items:center;font-weight:900;font-size:20px;box-shadow:0 8px 20px rgba(0,0,0,.25)}.brand b{letter-spacing:1px;font-size:16px}.brand span{display:block;font-size:11px;opacity:.75;margin-top:3px;letter-spacing:2px}
+.hero-content{max-width:850px;margin:58px auto 0;text-align:center;position:relative;z-index:1}.hero h1{font-size:clamp(32px,5vw,58px);margin:0 0 14px;letter-spacing:.5px}.hero p{max-width:680px;margin:auto;color:#dce8f5;font-size:17px;line-height:1.7}.badge{display:inline-block;background:rgba(212,175,55,.16);border:1px solid rgba(212,175,55,.5);color:#ffe99a;padding:8px 16px;border-radius:30px;font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:18px}
+main{max-width:1180px;margin:-45px auto 0;padding:0 20px 50px;position:relative;z-index:2}.welcome{background:#fff;border-radius:20px;padding:24px 28px;box-shadow:0 15px 45px rgba(16,35,63,.12);display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:30px}.welcome h2{margin:0 0 5px;font-size:20px}.welcome p{margin:0;color:var(--muted);font-size:14px}.status{background:#eef6ff;color:#1a4a7a;padding:10px 15px;border-radius:10px;font-weight:700;font-size:13px;white-space:nowrap}
+.section-title{text-align:center;margin:35px 0 22px}.section-title h2{margin:0;font-size:28px}.section-title p{color:var(--muted);margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.card{background:#fff;border-radius:22px;padding:28px;box-shadow:0 10px 30px rgba(20,40,70,.08);border:1px solid #e8edf3;transition:.25s}.card:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(20,40,70,.14)}.num{font-size:13px;font-weight:800;color:var(--gold);letter-spacing:1px}.icon{font-size:38px;margin:16px 0}.card h3{font-size:22px;margin:0 0 10px}.card p{color:var(--muted);line-height:1.6;font-size:14px;min-height:66px}.weight{display:inline-block;background:#f4f7fb;color:var(--navy2);padding:8px 12px;border-radius:9px;font-size:13px;font-weight:800;margin:8px 0 20px}.btn{display:block;width:100%;border:0;border-radius:12px;padding:14px 18px;background:var(--navy);color:#fff;text-align:center;text-decoration:none;font-weight:800;cursor:pointer;transition:.2s}.btn:hover{background:#1b416e}.btn.gold{background:var(--gold);color:var(--navy)}.btn.gold:hover{filter:brightness(.96)}
+.info{margin-top:32px;background:linear-gradient(135deg,#0c2342,#173e69);color:#fff;border-radius:24px;padding:32px;display:grid;grid-template-columns:1.4fr 1fr;gap:30px;align-items:center}.info h2{margin:0 0 10px}.info p{color:#cbd8e7;line-height:1.7}.formula{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:22px;border-radius:18px}.formula div{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.1)}.formula div:last-child{border:0;font-size:18px;font-weight:900;color:#ffe28a}
+footer{text-align:center;padding:28px 20px;color:#718096;font-size:13px}footer b{color:var(--navy)}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.info{grid-template-columns:1fr}.welcome{flex-direction:column;align-items:flex-start}.hero{padding-bottom:80px}.card p{min-height:auto}}
+
+/* LOGIN & MASA BERLAKU */
+#accessOverlay{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#071a33,#102d52);display:flex;align-items:center;justify-content:center;padding:20px}#accessCard{width:min(440px,100%);background:#fff;border-radius:24px;padding:34px 30px;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,.35)}#accessCard .access-logo{width:72px;height:72px;margin:0 auto 18px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold),#f0d879);color:var(--navy);font-size:28px;font-weight:900}#accessCard h2{margin:0 0 8px;color:var(--navy)}#accessCard p{color:#667085;line-height:1.6;margin:0 0 20px}#accessPassword{width:100%;padding:15px;border:1px solid #d7deea;border-radius:12px;font-size:16px;outline:none;margin-bottom:12px}#accessPassword:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,74,122,.1)}#accessBtn{width:100%;border:0;border-radius:12px;padding:15px;background:var(--navy);color:#fff;font-weight:800;font-size:16px;cursor:pointer}#accessError{display:none;color:#b42318;background:#fff1f0;border-radius:10px;padding:10px;margin-top:14px;font-size:14px}.expiry-note{font-size:12px!important;margin-top:18px!important;color:#98a2b3!important}
+</style>
+</head>
+<body>
+<div id="accessOverlay">
+  <div id="accessCard">
+    <div class="access-logo">PRC</div>
+    <h2>AKSES TRYOUT</h2>
+    <p>PERSONA RESEARCH &amp; CONSULTING<br>Silakan masukkan password untuk mengakses sistem tryout.</p>
+    <input type="password" id="accessPassword" placeholder="Masukkan Password" autocomplete="current-password">
+    <button id="accessBtn" onclick="checkAccess()">MASUK TRYOUT</button>
+    <div id="accessError"></div>
+    <p class="expiry-note">Masa akses berlaku sampai 2 September 2027.</p>
+  </div>
+</div>
+
+<section class="hero">
+ <div class="brand"><div class="logo">PRC</div><div><b>PERSONA RESEARCH & CONSULTING</b><span>PROFESSIONAL ASSESSMENT PLATFORM</span></div></div>
+ <div class="hero-content">
+  <div class="badge">SISTEM TRYOUT TERINTEGRASI</div>
+  <h1>TRYOUT ONLINE</h1>
+  <p>Platform simulasi terintegrasi untuk mengukur kemampuan peserta melalui Tes Kecerdasan, Tes Kepribadian, dan Tes Kecermatan.</p>
+ </div>
+</section>
+<main>
+ <section class="welcome"><div><h2>Selamat datang di Sistem Tryout PRC</h2><p>Silakan pilih sesi tes sesuai urutan. Hasil setiap tes akan digunakan dalam akumulasi nilai akhir.</p></div><div class="status">3 KOMPONEN PENILAIAN</div></section>
+ <div class="section-title"><h2>Pilih Sesi Tryout</h2><p>Setiap komponen memiliki bobot penilaian dalam hasil akhir.</p></div>
+ <div class="grid">
+  <article class="card"><div class="num">TRYOUT 01</div><div class="icon">🧠</div><h3>Tes Kecerdasan</h3><p>Mengukur kemampuan penalaran, verbal, numerik, logika, dan kemampuan berpikir peserta.</p><div class="weight">BOBOT NILAI: 30%</div><a class="btn" href="kecerdasan_1_to.html">MULAI TES KECERDASAN</a></article>
+  <article class="card"><div class="num">TRYOUT 02</div><div class="icon">🎯</div><h3>Tes Kepribadian</h3><p>Mengukur kecenderungan sikap, pengambilan keputusan, integritas, dan aspek perilaku peserta.</p><div class="weight">BOBOT NILAI: 30%</div><a class="btn" href="kepribadian_1_to.html">MULAI TES KEPRIBADIAN</a></article>
+  <article class="card"><div class="num">TRYOUT 03</div><div class="icon">⚡</div><h3>Tes Kecermatan</h3><p>Mengukur kecepatan, konsentrasi, ketelitian, dan konsistensi dalam mengerjakan tugas.</p><div class="weight">BOBOT NILAI: 40%</div><a class="btn" href="kecermatan_1_to.html">MULAI TES KECERMATAN</a></article>
+ </div>
+ <section class="info"><div><h2>Rekapitulasi Nilai Akhir</h2><p>Setelah seluruh sesi selesai, sistem akan menggabungkan hasil berdasarkan bobot yang telah ditentukan.</p><a class="btn gold" href="REKAP_NILAI_AKHIR.html">LIHAT REKAP NILAI AKHIR</a></div><div class="formula"><div><span>Tes Kecerdasan</span><b>30%</b></div><div><span>Tes Kepribadian</span><b>30%</b></div><div><span>Tes Kecermatan</span><b>40%</b></div><div><span>TOTAL</span><b>100%</b></div></div></section>
+</main>
+<footer><b>PERSONA RESEARCH & CONSULTING</b><br>© 2026 Professional Assessment & Tryout Platform</footer>
+
+<script>
+const TRYOUT_PASSWORD = "tryoutpersona1";
+const EXPIRED_DATE = new Date("2027-09-03T00:00:00");
+function checkAccess(){
+  const error=document.getElementById("accessError");
+  if(new Date() >= EXPIRED_DATE){
+    error.textContent="MAAF, MASA BERLAKU TRYOUT INI TELAH BERAKHIR.";
+    error.style.display="block";
+    return;
+  }
+  const pass=document.getElementById("accessPassword").value;
+  if(pass===TRYOUT_PASSWORD){
+    sessionStorage.setItem("prc_tryout_access","granted");
+    document.getElementById("accessOverlay").style.display="none";
+  }else{
+    error.textContent="Password salah. Silakan coba kembali.";
+    error.style.display="block";
+  }
+}
+document.getElementById("accessPassword").addEventListener("keydown",e=>{if(e.key==="Enter")checkAccess();});
+window.addEventListener("DOMContentLoaded",()=>{
+  const error=document.getElementById("accessError");
+  if(new Date() >= EXPIRED_DATE){
+    error.textContent="MAAF, MASA BERLAKU TRYOUT INI TELAH BERAKHIR.";
+    error.style.display="block";
+    document.getElementById("accessBtn").disabled=true;
+    return;
+  }
+  if(sessionStorage.getItem("prc_tryout_access")==="granted") document.getElementById("accessOverlay").style.display="none";
+});
+</script>
+</body>
+</html>
